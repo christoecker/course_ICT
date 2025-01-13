@@ -1,0 +1,21 @@
+{
+    "chapters": [
+      {
+        "id": "kapitel1",
+        "title": "Strukturierte Programmierung nach IEC 61131",
+        "subchapters": [
+          {
+            "id": "unterkapitel1",
+            "title": "Einführung in Structured Text (ST)",
+            "blocks": [
+              {
+                "id": "block1",
+                "title": "Verzweigungen mit IF...THEN...ELSE",
+                "description": "Erste grundlegende Beispiele für Verzweigungen."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
