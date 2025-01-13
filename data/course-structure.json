@@ -1,21 +1,99 @@
 {
     "chapters": [
       {
-        "id": "kapitel1",
-        "title": "Strukturierte Programmierung nach IEC 61131",
+        "id": "ch01",
+        "title": "Einführung in die Steuerungstechnik",
         "subchapters": [
           {
-            "id": "unterkapitel1",
-            "title": "Einführung in Structured Text (ST)",
+            "id": "sec01",
+            "title": "Einführung, Grundbegriffe und Definitionen",
             "blocks": [
               {
-                "id": "block1",
-                "title": "Verzweigungen mit IF...THEN...ELSE",
-                "description": "Erste grundlegende Beispiele für Verzweigungen."
+                "id": "bl01",
+                "title": "Aufgaben und Ziele der Steuerungstechnik",
+                "description": "TODO"
+              },
+              {
+                "id": "bl02",
+                "title": "Relevanter Begriffe",
+                "description": "TODO"
+              }
+            ]
+          },
+          {
+            "id": "sec02",
+            "title": "Überblick über Automatisierungssysteme",
+            "blocks": [
+              {
+                "id": "bl01",
+                "title": "Struktur eines Automatisierungssystems",
+                "description": "TODO"
+              },
+              {
+                "id": "bl02",
+                "title": "Unterschiedliche Steuerungstypen",
+                "description": "TODO"
+              },
+              {
+                "id": "bl03",
+                "title": "Übersicht über Steuerungskonzepte",
+                "description": "TODO"
+              },
+              {
+                "id": "bl03",
+                "title": "Einsatzbereiche und Beispiele von Automatisierungssystemen",
+                "description": "TODO"
               }
             ]
           }
         ]
+      },
+      {
+        "id": "ch02",
+        "title": "Aufbau und Strukturen industrieller Steuerungen",
+        "subchapters": [
+          {
+            "id": "sec01",
+            "title": "SPS-Systeme: Hardware, Software und typische Einsatzbereiche",
+            "blocks": [
+              {
+                "id": "bl01",
+                "title": "Aufbau einer SPS",
+                "description": "TODO"
+              },
+              {
+                "id": "bl02",
+                "title": "Software-Tools für SPS-Programmierung",
+                "description": "TODO"
+              }
+            ]
+          },
+          {
+            "id": "sec02",
+            "title": "PC-basierte Steuerungen: Architektur und Einsatzbereiche",
+            "blocks": [
+              {
+                "id": "bl01",
+                "title": "Komponenten einer PC-basierten Steuerung",
+                "description": "TODO"
+              },
+              {
+                "id": "bl02",
+                "title": "Soft-SPS",
+                "description": "TODO"
+              },
+              {
+                "id": "bl03",
+                "title": "Vorteile und Herausforderungen",
+                "description": "TODO"
+              },
+              {
+                "id": "bl04",
+                "title": "Anwendungsbereiche",
+                "description": "TODO"
+              }
+            ]
+          }
       }
     ]
   }
