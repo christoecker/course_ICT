@@ -1,99 +1,108 @@
 {
-    "chapters": [
-      {
-        "id": "ch01",
-        "title": "Einführung in die Steuerungstechnik",
-        "subchapters": [
-          {
-            "id": "sec01",
-            "title": "Einführung, Grundbegriffe und Definitionen",
-            "blocks": [
-              {
-                "id": "bl01",
-                "title": "Aufgaben und Ziele der Steuerungstechnik",
-                "description": "TODO"
-              },
-              {
-                "id": "bl02",
-                "title": "Relevanter Begriffe",
-                "description": "TODO"
-              }
-            ]
-          },
-          {
-            "id": "sec02",
-            "title": "Überblick über Automatisierungssysteme",
-            "blocks": [
-              {
-                "id": "bl01",
-                "title": "Struktur eines Automatisierungssystems",
-                "description": "TODO"
-              },
-              {
-                "id": "bl02",
-                "title": "Unterschiedliche Steuerungstypen",
-                "description": "TODO"
-              },
-              {
-                "id": "bl03",
-                "title": "Übersicht über Steuerungskonzepte",
-                "description": "TODO"
-              },
-              {
-                "id": "bl03",
-                "title": "Einsatzbereiche und Beispiele von Automatisierungssystemen",
-                "description": "TODO"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "ch02",
-        "title": "Aufbau und Strukturen industrieller Steuerungen",
-        "subchapters": [
-          {
-            "id": "sec01",
-            "title": "SPS-Systeme: Hardware, Software und typische Einsatzbereiche",
-            "blocks": [
-              {
-                "id": "bl01",
-                "title": "Aufbau einer SPS",
-                "description": "TODO"
-              },
-              {
-                "id": "bl02",
-                "title": "Software-Tools für SPS-Programmierung",
-                "description": "TODO"
-              }
-            ]
-          },
-          {
-            "id": "sec02",
-            "title": "PC-basierte Steuerungen: Architektur und Einsatzbereiche",
-            "blocks": [
-              {
-                "id": "bl01",
-                "title": "Komponenten einer PC-basierten Steuerung",
-                "description": "TODO"
-              },
-              {
-                "id": "bl02",
-                "title": "Soft-SPS",
-                "description": "TODO"
-              },
-              {
-                "id": "bl03",
-                "title": "Vorteile und Herausforderungen",
-                "description": "TODO"
-              },
-              {
-                "id": "bl04",
-                "title": "Anwendungsbereiche",
-                "description": "TODO"
-              }
-            ]
-          }
-      }
-    ]
-  }
+  "chapters": [
+    {
+      "id": "kapitel1",
+      "title": "Grundlagen der SPS-Technik",
+      "subchapters": [
+        {
+          "id": "unterkapitel1",
+          "title": "Was ist eine SPS?",
+          "blocks": [
+            {
+              "id": "block1",
+              "title": "Aufbau und Grundfunktionen",
+              "description": "Lernziele: Komponenten einer SPS, grundlegende Funktionsweise..."
+            },
+            {
+              "id": "block2",
+              "title": "Einfache Logikfunktionen",
+              "description": "Erklärung und Beispiele: UND, ODER, NICHT usw."
+            }
+          ]
+        },
+        {
+          "id": "unterkapitel2",
+          "title": "Einfache Programmierung",
+          "blocks": [
+            {
+              "id": "block1",
+              "title": "Logikverknüpfungen in KOP",
+              "description": "Grundlagen des Kontaktplans (KOP)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kapitel2",
+      "title": "Speicherprogrammierbare Steuerungen im Einsatz",
+      "subchapters": [
+        {
+          "id": "unterkapitel1",
+          "title": "Typische Anwendungsbereiche",
+          "blocks": [
+            {
+              "id": "block1",
+              "title": "Fördertechnik",
+              "description": "Beispiele für SPS-Steuerungen in Förderanlagen"
+            },
+            {
+              "id": "block2",
+              "title": "Montagelinien",
+              "description": "Automatisierte Montagelinien in der Industrie"
+            }
+          ]
+        },
+        {
+          "id": "unterkapitel2",
+          "title": "Praktische Umsetzung",
+          "blocks": [
+            {
+              "id": "block1",
+              "title": "Auswahl der richtigen SPS",
+              "description": "Kriterien für die Systemauswahl"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kapitel3",
+      "title": "Strukturierte Programmierung nach IEC 61131",
+      "subchapters": [
+        {
+          "id": "unterkapitel1",
+          "title": "Einführung in Structured Text (ST)",
+          "blocks": [
+            {
+              "id": "block1",
+              "title": "Grundlegende Syntax",
+              "description": "Variablendeklaration, Zuweisungen"
+            },
+            {
+              "id": "block2",
+              "title": "Verzweigungen mit IF...THEN...ELSE",
+              "description": "Einfache Programmverzweigungen"
+            }
+          ]
+        },
+        {
+          "id": "unterkapitel2",
+          "title": "Schleifen und Programmunterbrechungen",
+          "blocks": [
+            {
+              "id": "block1",
+              "title": "FOR-, WHILE- und REPEAT-Schleifen",
+              "description": "Wiederholende Abläufe implementieren"
+            },
+            {
+              "id": "block2",
+              "title": "EXIT und CONTINUE",
+              "description": "Programmunterbrechungen und -fortsetzungen"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
