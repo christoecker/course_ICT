@@ -1,0 +1,29 @@
+{
+  "name": "course_ICT",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "name": "my-course-project",
+    "version": "1.0.0",
+    "scripts": {
+      "build": "node build.js"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christoecker/course_ICT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/christoecker/course_ICT/issues"
+  },
+  "homepage": "https://github.com/christoecker/course_ICT#readme",
+  "dependencies": {
+    "marked": "^15.0.6"
+  }
+}

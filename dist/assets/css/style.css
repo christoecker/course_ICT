@@ -1,0 +1,38 @@
+.code-block {
+  background-color: #f3f3f3;
+  border-radius: 5px;
+  position: relative;
+  margin: 1em 0;
+  padding: 0.5em;        /* Weniger Innenabstand */
+  border: 1px solid #ddd;
+}
+  
+.code-block pre {
+  margin: 0.5em;       /* Entfernt Standard-Margin von <pre> */
+  padding: 0;      /* Entfernt evtl. zusätzliches Padding */
+}
+
+.code-block code {
+  display: block;
+  margin: 0;
+  overflow-x: auto;     /* Falls Zeilen zu lang sind */
+}
+
+  .code-block-header {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+  }
+  
+  .copy-button {
+    cursor: pointer;
+    font-size: 0.9rem;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 0.3rem 0.6rem;
+  }
+  .copy-button:hover {
+    background-color: #e0e0e0;
+  }
+  

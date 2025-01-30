@@ -1,0 +1,77 @@
+<!-- src/template.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seminar – Course ICT</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  
+</head>
+<body class="bg-light">
+    <nav class="navbar sticky-top navbar-light bg-white border-bottom">
+        <div class="container">
+            <a class="navbar-brand" href="#">Course ICT</a>
+            
+            
+  <button class="btn btn-sm btn-outline-secondary" onclick="location.href='selfstudy.html'">
+    Study
+  </button>
+
+        </div>
+    </nav>
+
+  <div class="container my-4">
+    <h1>Seminar</h1>
+<p>Willkommen im Seminar-Bereich!</p>
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+      <div class="col">
+        <div class="card h-100">
+          <img src="assets/images/img_ch01.jpg" class="card-img-top" alt="Bild zu Grundlagen der SPS-Technik" />
+          <div class="card-body">
+            <h5 class="card-title">Grundlagen der SPS-Technik</h5>
+            <p class="card-text">Hier lernst du die Basics einer SPS kennen.</p>
+            <a href="ch01_seminar.html" class="btn btn-primary">zum Kapitel</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="col">
+        <div class="card h-100">
+          <img src="assets/images/img_ch02.jpg" class="card-img-top" alt="Bild zu Speicherprogrammierbare Steuerungen im Einsatz" />
+          <div class="card-body">
+            <h5 class="card-title">Speicherprogrammierbare Steuerungen im Einsatz</h5>
+            <p class="card-text">Eine ander Beschreibung...</p>
+            <a href="ch02_seminar.html" class="btn btn-primary">zum Kapitel</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="col">
+        <div class="card h-100">
+          <img src="assets/images/img_ch03.jpg" class="card-img-top" alt="Bild zu Strukturierte Programmierung nach IEC 61131" />
+          <div class="card-body">
+            <h5 class="card-title">Strukturierte Programmierung nach IEC 61131</h5>
+            <p class="card-text">Los geht's ans Programmieren...</p>
+            <a href="ch03_seminar.html" class="btn btn-primary">zum Kapitel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <script type="module">
+    import stLanguage from '../dist/assets/js/hljs-st.js';  // Pfad anpassen
+    hljs.registerLanguage('st', stLanguage);
+    hljs.highlightAll();
+  </script>
+  <script>hljs.highlightAll();</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

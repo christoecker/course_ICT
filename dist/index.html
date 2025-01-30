@@ -1,0 +1,46 @@
+<!-- src/template.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Startseite – Course ICT</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  
+</head>
+<body class="bg-light">
+    <nav class="navbar sticky-top navbar-light bg-white border-bottom">
+        <div class="container">
+            <a class="navbar-brand" href="#">Course ICT</a>
+            
+            
+  <button class="btn btn-sm btn-outline-secondary" onclick="location.href='seminar.html'">
+    Seminar
+  </button>
+
+        </div>
+    </nav>
+
+  <div class="container my-4">
+    <h1>Willkommen zu Course ICT</h1>
+<p>Hier könnte später mal eine Login-Maske kommen.</p>
+
+<button class="btn btn-primary" onclick="location.href='selfstudy.html'">
+    Zum Selbststudium
+</button>
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <script type="module">
+    import stLanguage from '../dist/assets/js/hljs-st.js';  // Pfad anpassen
+    hljs.registerLanguage('st', stLanguage);
+    hljs.highlightAll();
+  </script>
+  <script>hljs.highlightAll();</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

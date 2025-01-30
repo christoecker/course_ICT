@@ -1,0 +1,80 @@
+<!-- src/template.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seminar – Strukturierte Programmierung nach IEC 61131</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  
+</head>
+<body class="bg-light">
+    <nav class="navbar sticky-top navbar-light bg-white border-bottom">
+        <div class="container">
+            <a class="navbar-brand" href="#">Course ICT</a>
+            
+    <button class="btn btn-sm btn-outline-secondary" onclick="location.href='seminar.html'">
+      Zurück zur Übersicht
+    </button>
+  
+            <!-- #NAV_TOGGLE -->
+        </div>
+    </nav>
+
+  <div class="container my-4">
+    
+    <h2>Strukturierte Programmierung nach IEC 61131</h2>
+    <h1>Grundlagen der SPS-Technik</h1>
+<p>In diesem Kapitel lernst du die ersten Schritte der Programmierung in <strong>Structured Text (ST)</strong> kennen. </p>
+<p><em>Dies ist ein kursiver Text</em>, der eine wichtige Definition enthält.</p>
+<h2>Beispiel für ST-Code mit Kopier-Button</h2>
+<p>Hier ist ein Code-Block in Structured Text, dargestellt mit einem 
+grauen Kasten und abgerundeten Ecken. Oben rechts findest du einen 
+Kopieren-Button.</p>
+<div class="code-block">
+  <div class="code-block-header">
+    <button class="btn btn-light btn-sm" onclick="copyCodeBlock(event)" style="color: #6f6f6f;">
+      <img src="assets/images/icon_copy.png" style="height: 1em; margin-right: 0.3em;">Kopieren
+    </button>
+  </div>
+  <pre><code class="language-st">
+IF x > 10 THEN
+  y := x + 1;
+ELSIF x = 10 THEN   // Dies ist ein Kommentar!
+  y := 2 * x;
+ELSE
+  y := 0;
+END_IF;
+</code></pre>
+</div>
+
+
+<h2>Ein Bild einfügen</h2>
+<p>Hier eine beispielhafte Abbildung, wie eine SPS aufgebaut sein kann:</p>
+<p><img src="assets/images/sps_abbildung.png" alt="SPS Aufbau" title="SPS Aufbau"></p>
+<p>Das ist das Ende </p>
+<div style="background-color:rgb(255, 222, 222); padding: 1rem; border-radius: 5px;">
+  <strong>Achtung!</strong><br>
+  Hier steht ein Warnhinweis, der in einem roten Kasten angezeigt wird.
+</div>
+
+    <button class="btn btn-outline-success mt-3" onclick="location.href='seminar.html'">
+      Zurück zur Übersicht
+    </button>
+  
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <script type="module">
+    import stLanguage from '../dist/assets/js/hljs-st.js';  // Pfad anpassen
+    hljs.registerLanguage('st', stLanguage);
+    hljs.highlightAll();
+  </script>
+  <script>hljs.highlightAll();</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
