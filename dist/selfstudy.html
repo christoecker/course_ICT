@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/style.css"/>
   
 </head>
-<body class="bg-light">
+<body class="bg-white">
     <nav class="navbar sticky-top navbar-light bg-white border-bottom">
         <div class="container">
             <a class="navbar-brand" href="#">Course ICT</a>
@@ -26,16 +26,112 @@
     <h1>Selbststudium</h1>
 <p>Willkommen im Selbststudium-Bereich!</p>
 
-<ul class="list-group">
-      <li class="list-group-item">
-        <strong>Grundlagen der SPS-Technik</strong>
-    <ul class="list-group mt-2"><li class="list-group-item">Was ist eine SPS?</li><li class="list-group-item">Einfache Programmierung</li></ul></li>
-      <li class="list-group-item">
-        <strong>Speicherprogrammierbare Steuerungen im Einsatz</strong>
-    <ul class="list-group mt-2"><li class="list-group-item">Typische Anwendungsbereiche</li><li class="list-group-item">Praktische Umsetzung</li></ul></li>
-      <li class="list-group-item">
-        <strong>Strukturierte Programmierung nach IEC 61131</strong>
-    <ul class="list-group mt-2"><li class="list-group-item">Einführung in Structured Text (ST)</li><li class="list-group-item">Schleifen und Programmunterbrechungen</li></ul></li></ul>
+<div class="accordion" id="accordionSelfstudy">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-ch01">
+          <button class="accordion-button collapsed" 
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse-ch01"
+                  aria-expanded="false"
+                  aria-controls="collapse-ch01">
+            <strong>Grundlagen der SPS-Technik</strong>
+          </button>
+        </h2>
+        <div id="collapse-ch01" 
+             class="accordion-collapse collapse"
+             aria-labelledby="heading-ch01"
+             data-bs-parent="#accordionSelfstudy">
+          <div class="accordion-body">
+            <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Was ist eine SPS?
+            <button class="btn btn-dark btn-sm" onclick="location.href='ch01_selfstudy.html?ch=ch01&sub=sec01'">
+              Jetzt starten
+            </button>
+          </li>
+        
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Einfache Programmierung
+            <button class="btn btn-dark btn-sm" onclick="location.href='ch01_selfstudy.html?ch=ch01&sub=sec02'">
+              Jetzt starten
+            </button>
+          </li>
+        </ul>
+          </div>
+        </div>
+      </div>
+    
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-ch02">
+          <button class="accordion-button collapsed" 
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse-ch02"
+                  aria-expanded="false"
+                  aria-controls="collapse-ch02">
+            <strong>Speicherprogrammierbare Steuerungen im Einsatz</strong>
+          </button>
+        </h2>
+        <div id="collapse-ch02" 
+             class="accordion-collapse collapse"
+             aria-labelledby="heading-ch02"
+             data-bs-parent="#accordionSelfstudy">
+          <div class="accordion-body">
+            <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Typische Anwendungsbereiche
+            <button class="btn btn-dark btn-sm" onclick="location.href='ch02_selfstudy.html?ch=ch02&sub=sec01'">
+              Jetzt starten
+            </button>
+          </li>
+        
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Praktische Umsetzung
+            <button class="btn btn-dark btn-sm" onclick="location.href='ch02_selfstudy.html?ch=ch02&sub=sec02'">
+              Jetzt starten
+            </button>
+          </li>
+        </ul>
+          </div>
+        </div>
+      </div>
+    
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-ch03">
+          <button class="accordion-button collapsed" 
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse-ch03"
+                  aria-expanded="false"
+                  aria-controls="collapse-ch03">
+            <strong>Strukturierte Programmierung nach IEC 61131</strong>
+          </button>
+        </h2>
+        <div id="collapse-ch03" 
+             class="accordion-collapse collapse"
+             aria-labelledby="heading-ch03"
+             data-bs-parent="#accordionSelfstudy">
+          <div class="accordion-body">
+            <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Einführung in Structured Text (ST)
+            <button class="btn btn-dark btn-sm" onclick="location.href='ch03_selfstudy.html?ch=ch03&sub=sec01'">
+              Jetzt starten
+            </button>
+          </li>
+        
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            Schleifen und Programmunterbrechungen
+            <button class="btn btn-dark btn-sm" onclick="location.href='ch03_selfstudy.html?ch=ch03&sub=sec02'">
+              Jetzt starten
+            </button>
+          </li>
+        </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
@@ -49,5 +145,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>

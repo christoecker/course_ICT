@@ -26,7 +26,8 @@ if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist');
 }
 
-// 2) buildChapterOverview importieren/definieren
+// 2) buildChapterOverview importieren/definieren   <<<<<< DEPRECTAED!!!
+/*
 function buildChapterOverview(courseData, showSubchapters) {
   let html = '<ul class="list-group">';
   courseData.chapters.forEach(chapter => {
@@ -46,8 +47,73 @@ function buildChapterOverview(courseData, showSubchapters) {
   html += '</ul>';
   return html;
 }
+  */
 
 
+function buildSelfstudyOverview(courseData) {
+  // Basis-HTML für das Accordion
+  let html = `<div class="accordion" id="accordionSelfstudy">`;
+
+  courseData.chapters.forEach((chapter, index) => {
+    // Eindeutige IDs für das Accordion
+    const headingId = `heading-${chapter.id}`;
+    const collapseId = `collapse-${chapter.id}`;
+    const chapterFilename = `${chapter.id}_selfstudy.html`;
+
+    // Subchapters auflisten
+    // (Du kannst hier verlinken zu Einzelseiten oder detail.html etc.)
+    let subHtml = '';
+    if (chapter.subchapters && chapter.subchapters.length > 0) {
+      subHtml += '<ul class="list-group">';
+      chapter.subchapters.forEach(sub => {
+        // Query-Parameter: ?sub=unterX
+        // So weiß die Zielseite, welches Unterkapitel gemeint ist
+        const link = `${chapterFilename}?ch=${chapter.id}&sub=${sub.id}`;
+
+        subHtml += `
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            ${sub.title}
+            <button class="btn btn-dark btn-sm" onclick="location.href='${link}'">
+              Jetzt starten
+            </button>
+          </li>
+        `;
+      });
+      subHtml += '</ul>';
+    } else {
+      subHtml = '<p>Keine Unterkapitel vorhanden.</p>';
+    }
+
+    // Accordion-Item pro Kapitel
+    html += `
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="${headingId}">
+          <button class="accordion-button collapsed" 
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#${collapseId}"
+                  aria-expanded="false"
+                  aria-controls="${collapseId}">
+            <strong>${chapter.title}</strong>
+          </button>
+        </h2>
+        <div id="${collapseId}" 
+             class="accordion-collapse collapse"
+             aria-labelledby="${headingId}"
+             data-bs-parent="#accordionSelfstudy">
+          <div class="accordion-body">
+            ${subHtml}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += '</div>'; // Ende accordion
+  return html;
+}
+
+/*
 function buildSeminarOverviewAsCards(courseData) {
   // Bootstrap Grid Layout
   let html = `<div class="row row-cols-1 row-cols-md-2 g-4">`;
@@ -80,7 +146,7 @@ function buildSeminarOverviewAsCards(courseData) {
   html += `</div>`; // Ende row
   return html;
 }
-
+*/
 
 
 // Hilfsfunktionen
@@ -122,7 +188,7 @@ function buildSeminarChapterPage(chapter) {
   const contentHtml = `
     <h2>${chapter.title}</h2>
     ${seminarContentHtml}
-    <button class="btn btn-outline-success mt-3" onclick="location.href='seminar.html'">
+    <button class="btn btn-sm btn-outline-secondary" onclick="location.href='seminar.html'">
       Zurück zur Übersicht
     </button>
   `;
@@ -194,6 +260,82 @@ function buildSeminarOverviewAsCards(courseData) {
 }
 
 
+
+// SEITEN FÜR SELFSTUDY BEREICH ERZEUGEN
+function buildSelfstudyChapterPage(chapter, template) {
+  let page = template;
+
+  // TITLE und HEADER-Platzhalter anpassen
+  page = replacePlaceholder(page, '<!-- #TITLE -->', `Selbststudium – ${chapter.title}`);
+  // Falls du einen Navbar-Button etc. einbauen willst, der zurück zur Übersicht führt, kannst du das hier tun:
+  const navButtonHtml = `
+    <button class="btn btn-sm btn-outline-secondary" onclick="location.href='selfstudy.html'">
+      Zurück zur Übersicht
+    </button>
+  `;
+  page = replacePlaceholder(page, '<!-- #NAV_BUTTON -->', navButtonHtml);
+
+  // 2) Content: Hier fügen wir das <div> + <script> ein
+  //    - Wir nutzen 'chapter.id' als Default kapId, falls param 'kap' fehlt
+  //    - subId aus Param => => build dateiname => fetch markdown
+  const contentHtml = `
+    <h2>${chapter.title}</h2>
+    <div id="subchapter-content"></div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // 1) Query auslesen
+        const params = new URLSearchParams(window.location.search);
+        const kapId = params.get('ch') || '${chapter.id}';   // fallback: aktuelles kapitel
+        const subId = params.get('sub');                      // e.g. "sec01"
+
+        if (!subId) {
+          document.getElementById('subchapter-content').innerHTML = 
+            '<p>Bitte wähle ein Unterkapitel über die Übersicht.</p>';
+          return;
+        }
+
+        // 2) Pfad: z.B. "content/ch01_sub01.md"
+        const mdPath = '../content/' + kapId + '_' + subId + '.md';
+
+        // 3) fetch + marked.parse
+        fetch(mdPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Kann ' + mdPath + ' nicht laden');
+            }
+            return response.text();
+          })
+          .then(mdText => {
+            const html = marked.parse(mdText);
+            document.getElementById('subchapter-content').innerHTML = html;
+          })
+          .catch(err => {
+            console.error(err);
+            document.getElementById('subchapter-content').innerHTML =
+              '<p>Fehler beim Laden des Inhalts.</p>';
+          });
+      });
+    </script>
+  `;
+
+  page = replacePlaceholder(page, '<!-- #CONTENT -->', contentHtml);
+
+  return page;
+}
+
+courseData.chapters.forEach((chapter) => {
+  // Dateiname, z.B. "kapitel1_selfstudy.html"
+  const filename = `${chapter.id}_selfstudy.html`;
+
+  // Inhalt erzeugen
+  const outputHtml = buildSelfstudyChapterPage(chapter, template);
+
+  // Schreiben in dist
+  fs.writeFileSync(path.join(__dirname, 'dist', filename), outputHtml);
+  console.log(`Erzeugt: ${filename}`);
+});
+
+
 // ------------------------------------------------
 // index.html (Startseite)
 // ------------------------------------------------
@@ -249,7 +391,7 @@ function buildSeminarOverviewAsCards(courseData) {
     outputSelfstudy = replacePlaceholder(outputSelfstudy, '<!-- #NAV_TOGGLE -->', navButtonSeminar);
   
     // 1) Erzeuge HTML-Snippet für Kapitel + Unterkapitel
-    const overviewHTML = buildChapterOverview(courseData, true);
+    const overviewHTML = buildSelfstudyOverview(courseData);
   
     // 2) Ersetze in selfstudyContent den #CHAPTER_OVERVIEW
     //    Falls dein selfstudyContent selbst den Platzhalter hat

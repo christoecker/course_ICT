@@ -3,7 +3,7 @@
   border-radius: 5px;
   position: relative;
   margin: 1em 0;
-  padding: 0.5em;        /* Weniger Innenabstand */
+  padding: 0.1em;        /* Weniger Innenabstand */
   border: 1px solid #ddd;
 }
   
@@ -36,3 +36,43 @@
     background-color: #e0e0e0;
   }
   
+
+  /* Style Accordion ändern -> Kapitelübericht Selbstlernbereich */
+  /* Entfernt die Standard-Rahmen der einzelnen Accordion-Items */
+  .accordion-item {
+    /* border: none; */
+    margin-top: 0.5rem; /* oder 1em, 2rem etc. nach Geschmack */
+    margin-bottom: 0.5rem; /* oder 1em, 2rem etc. nach Geschmack */
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding-bottom: 0.5em;
+  }
+  
+/* Beim allerersten Item entfernen wir die Linie wieder */
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+/* Entfernt den Rahmen/Fokus/Background der Accordion-Buttons */
+.accordion-button {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Wenn das Element aufgeklappt ist, wollen wir auch keinen Schatten */
+.accordion-button:not(.collapsed) {
+  color: #000000 !important;
+  box-shadow: none;
+  background-color: transparent;
+}
+
+
+/* Entfernt ggf. Fokus-Ringe */
+.accordion-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+
