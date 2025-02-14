@@ -1,3 +1,23 @@
+body {
+  font-family: 'Exo 2', sans-serif;
+}
+
+.code-lines {
+  list-style: none; /* oder set inlined, falls gewünscht */
+  padding: 0;
+  margin: 0;
+}
+
+.code-line {
+  background-color: #cecece; /* helles Grau */
+  white-space: pre-wrap;
+  margin-bottom: 0.5rem;    /* kleiner Abstand zwischen Zeilen */
+  padding: 0.5rem 1rem;    /* bisschen Innenabstand */
+  border-radius: 4px;      /* leicht abgerundete Ecken */
+  font-family: 'Consolas', monospace;
+  cursor: move; /* zeigt an, dass man es greifen kann (bei drag&drop) */
+}
+
 .code-block {
   background-color: #f3f3f3;
   border-radius: 5px;
@@ -75,4 +95,53 @@
   box-shadow: none;
 }
 
+.navbar-light .navbar-brand {
+  color: #8C00FF;
+}
+
+/* Hintergrundfarbe der Progressbar */
+.progress {
+  background-color: #ffffff !important; /* oder 'transparent' */
+}
+
+.CDcolor {
+  background-color: #8C00FF !important; 
+}
+
+.mc-box {
+  background-color: #f7edff; /* dezente Hintergrundfarbe */
+  border-radius: 10px;       /* abgerundete Ecken */
+  border: 1px solid #8C00FF;    /* dünner Rahmen */
+}
+
+.btn-lernhub {
+  /* Grundzustand */
+  background-color: #8C00FF; /* dein Wunsch-Farbton */
+  color: #fff;
+  border: none;             /* oder ein dezenter Rahmen */
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;       /* falls du abgerundete Ecken möchtest */
+  cursor: pointer;
+}
+
+/* Hover- und Focus-Zustand */
+.btn-lernhub:hover,
+.btn-lernhub:focus {
+  background-color: #6800bd; /* etwas dunkler */
+  color: #fff;               /* evtl. unverändert */
+}
+
+/* Deaktivierter Zustand */
+.btn-lernhub:disabled,
+.btn-lernhub.disabled {
+  background-color: #b55cff; /* ein grauer Ton */
+  color: #000000;
+  cursor: not-allowed;
+  opacity: 0.7;             /* optional leicht transparent */
+}
+
+.btn-lernhub:active {
+  background-color: #6800bd;
+  /* z.B. noch etwas dunkler */
+}
 

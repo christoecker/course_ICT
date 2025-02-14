@@ -26,28 +26,7 @@ if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist');
 }
 
-// 2) buildChapterOverview importieren/definieren   <<<<<< DEPRECTAED!!!
-/*
-function buildChapterOverview(courseData, showSubchapters) {
-  let html = '<ul class="list-group">';
-  courseData.chapters.forEach(chapter => {
-    html += `
-      <li class="list-group-item">
-        <strong>${chapter.title}</strong>
-    `;
-    if (showSubchapters && chapter.subchapters) {
-      html += '<ul class="list-group mt-2">';
-      chapter.subchapters.forEach(sub => {
-        html += `<li class="list-group-item">${sub.title}</li>`;
-      });
-      html += '</ul>';
-    }
-    html += '</li>';
-  });
-  html += '</ul>';
-  return html;
-}
-  */
+
 
 
 function buildSelfstudyOverview(courseData) {
@@ -68,7 +47,7 @@ function buildSelfstudyOverview(courseData) {
       chapter.subchapters.forEach(sub => {
         // Query-Parameter: ?sub=unterX
         // So weiß die Zielseite, welches Unterkapitel gemeint ist
-        const link = `${chapterFilename}?ch=${chapter.id}&sub=${sub.id}`;
+        const link = `${chapterFilename}?ch=${chapter.id}&sub=${sub.id}&step=1`;
 
         subHtml += `
           <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -112,41 +91,6 @@ function buildSelfstudyOverview(courseData) {
   html += '</div>'; // Ende accordion
   return html;
 }
-
-/*
-function buildSeminarOverviewAsCards(courseData) {
-  // Bootstrap Grid Layout
-  let html = `<div class="row row-cols-1 row-cols-md-2 g-4">`;
-
-  courseData.chapters.forEach((chapter) => {
-    const imgTag = chapter.imageUrl
-      ? `<img src="${chapter.imageUrl}" class="card-img-top" alt="Bild zu ${chapter.title}" />`
-      : '';  // Falls kein imageUrl angegeben ist, zeig kein Bild
-
-    html += `
-      <div class="col">
-        <div class="card h-100">
-          ${imgTag}
-          <div class="card-body">
-            <h5 class="card-title">${chapter.title}</h5>
-            <p class="card-text">
-              ${chapter.description || ""}
-            </p>
-
-            <!-- Button oder Link, um später zum Detail zu kommen -->
-            <button class="btn btn-sm btn-light">
-              zum Kapitel
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  });
-
-  html += `</div>`; // Ende row
-  return html;
-}
-*/
 
 
 // Hilfsfunktionen
@@ -192,6 +136,8 @@ function buildSeminarChapterPage(chapter) {
       Zurück zur Übersicht
     </button>
   `;
+
+    
 
   // In Template einfügen
   page = replacePlaceholder(page, '<!-- #CONTENT -->', contentHtml);
@@ -263,63 +209,499 @@ function buildSeminarOverviewAsCards(courseData) {
 
 // SEITEN FÜR SELFSTUDY BEREICH ERZEUGEN
 function buildSelfstudyChapterPage(chapter, template) {
+  // 1) Template klonen
   let page = template;
 
-  // TITLE und HEADER-Platzhalter anpassen
-  page = replacePlaceholder(page, '<!-- #TITLE -->', `Selbststudium – ${chapter.title}`);
-  // Falls du einen Navbar-Button etc. einbauen willst, der zurück zur Übersicht führt, kannst du das hier tun:
+  // 2) TITLE & NAV-BUTTON setzen
+  page = replacePlaceholder(page, "<!-- #TITLE -->", `Selbststudium – ${chapter.title}`);
+
   const navButtonHtml = `
     <button class="btn btn-sm btn-outline-secondary" onclick="location.href='selfstudy.html'">
       Zurück zur Übersicht
     </button>
   `;
-  page = replacePlaceholder(page, '<!-- #NAV_BUTTON -->', navButtonHtml);
+  page = replacePlaceholder(page, "<!-- #NAV_BUTTON -->", navButtonHtml);
 
-  // 2) Content: Hier fügen wir das <div> + <script> ein
-  //    - Wir nutzen 'chapter.id' als Default kapId, falls param 'kap' fehlt
-  //    - subId aus Param => => build dateiname => fetch markdown
+  // HTML für die Progress-Bar
+  const progressBarHtml = `
+    <hr class="m-0" />
+    <div class="progress" style="height: 5px;">
+      <div id="studyProgress" class="progress-bar CDcolor" style="width: 0%;"></div>
+    </div>
+  `;
+  page = replacePlaceholder(page, "<!-- #PROGRESS_BAR -->", progressBarHtml);
+
+  // 3) Abschnitte-Layout einbetten
+  //    Hier definieren wir u.a. "kapId" und "subId", damit wir "ch01_sec02.md" laden können
+  //    und daraus schrittweise Inhalt anzeigen.
   const contentHtml = `
-    <h2>${chapter.title}</h2>
-    <div id="subchapter-content"></div>
+    <div class="container mt-4">
+      <h2>${chapter.title}</h2>
+      <div id="content-area"></div>
+
+      <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+        <button id="btnPrev" class="btn btn-sm btn-secondary">Zurück</button>
+        <span id="stepIndicator">2/5</span>
+        <button id="btnNext" class="btn btn-sm btn-secondary" disabled>Weiter</button>
+        <button id="btnFinish" class="btn btn-sm btn-secondary d-none">Zur Übersicht</button>
+      </div>
+    </div>
+
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // 1) Query auslesen
+        // Query-Parameter holen, z.B. "?kap=ch01&sub=sec02&step=2"
         const params = new URLSearchParams(window.location.search);
-        const kapId = params.get('ch') || '${chapter.id}';   // fallback: aktuelles kapitel
-        const subId = params.get('sub');                      // e.g. "sec01"
+        const kapId = params.get('kap') || '${chapter.id}'; // e.g. "ch01"
+        const subId = params.get('sub');                    // e.g. "sec02"
+        
+        // Standard schritt
+        let currentStep = parseInt(params.get('step') || '1', 10);
+        if (isNaN(currentStep)) currentStep = 1;
 
+        // Pfad zur MD-Datei, z.B. "../content/ch01_sec02.md"
+        // (Achte darauf, dass von der fertigen HTML aus das "../content" korrekt ist)
+        const mdFilePath = '../content/' + kapId + '_' + subId + '.md';
+
+        let sections = [];  // Hier speichern wir den Inhalt je Abschnitt
+        let maxSteps = 1;
+
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const contentArea = document.getElementById('content-area');
+
+        // 1) Prüfen, ob subId vorhanden ist
         if (!subId) {
-          document.getElementById('subchapter-content').innerHTML = 
-            '<p>Bitte wähle ein Unterkapitel über die Übersicht.</p>';
+          contentArea.innerHTML = '<p>Bitte wähle ein Unterkapitel.</p>';
+          // Du könntest hier ggf. einen redirect zurück in die Übersicht machen
           return;
         }
 
-        // 2) Pfad: z.B. "content/ch01_sub01.md"
-        const mdPath = '../content/' + kapId + '_' + subId + '.md';
-
-        // 3) fetch + marked.parse
-        fetch(mdPath)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Kann ' + mdPath + ' nicht laden');
+        // 2) Markdown-Datei laden
+        fetch(mdFilePath)
+          .then(resp => {
+            if (!resp.ok) {
+              throw new Error('Fehler beim Laden von ' + mdFilePath);
             }
-            return response.text();
+            return resp.text();
           })
           .then(mdText => {
-            const html = marked.parse(mdText);
-            document.getElementById('subchapter-content').innerHTML = html;
+            // Abschnitte extrahieren
+            sections = splitMarkdownIntoSections(mdText);
+            maxSteps = sections.length;
+
+            // Entsprechenden Abschnitt anzeigen
+            showStep(currentStep);
           })
           .catch(err => {
             console.error(err);
-            document.getElementById('subchapter-content').innerHTML =
-              '<p>Fehler beim Laden des Inhalts.</p>';
+            contentArea.innerHTML = '<p>Fehler beim Laden des Inhalts.</p>';
           });
+
+        // 3) Buttons
+        btnPrev.addEventListener('click', () => {
+          if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+          }
+        });
+        btnNext.addEventListener('click', () => {
+          if (currentStep < maxSteps) {
+            // Hier ggf. prüfen, ob Aufgabe gelöst wurde
+            currentStep++;
+            showStep(currentStep);
+          }
+        });
+        btnFinish.addEventListener('click', () => {
+          location.href = 'selfstudy.html'; 
+        });
+
+        let exerciseDone = []; // true/false pro Abschnitt
+        for (let i = 0; i < maxSteps; i++) { exerciseDone[i] = false; }
+
+        // Anzeige-Funktion
+        function showStep(step) {
+          // Clamp Step
+          if (step < 1) step = 1;
+          if (step > sections.length) step = sections.length;
+
+          currentStep = step; // z.B. globale Variable
+          const mdText = sections[step - 1] || "Kein Inhalt für diesen Abschnitt.";
+
+          
+
+          // 1) Markdown parsen und in #content-area einfügen
+          const html = marked.parse(mdText);
+          const contentArea = document.getElementById("content-area");
+          contentArea.innerHTML = html;
+
+          // 2) Prev/Next/Finish Buttons
+          const btnPrev = document.getElementById("btnPrev");
+          const btnNext = document.getElementById("btnNext");
+          const btnFinish = document.getElementById("btnFinish");
+
+          // Prev-Button nur disabled, wenn step=1
+          btnPrev.disabled = (step === 1);
+
+          // Bestimmen, ob das der letzte Schritt ist
+          const isLastStep = (step === maxSteps);
+
+          if (step < maxSteps) {
+            // Normale Abschnitte
+            btnNext.classList.remove('d-none');   // „Weiter“ zeigen
+            btnFinish.classList.add('d-none');    // „Zurück zur Übersicht“ verstecken
+          } else {
+            // Letzter Abschnitt => Alle Abschnitte fertig
+            btnNext.classList.add('d-none');      // „Weiter“ ausblenden
+            btnFinish.classList.remove('d-none'); // „Zurück zur Übersicht“ zeigen
+          }
+
+          // (4) Falls exerciseDone[step-1] = true => Step „erledigt“
+          //     Sonst => Step offen
+          updateStepUI(step, isLastStep);
+
+          // Übungen
+          const exercise = contentArea.querySelector(".exercise");
+
+          if (exercise) {
+            // Welcher Typ?
+            const type = exercise.dataset.type; // z.B. "mc", "simpleCheck"
+            switch(type) {
+              case "mc-question":                     // multiple choice
+                setupMultipleChoice(exercise, step);
+                break;
+              case "sort-code":
+                setupSortCode(exercise, step);
+                break;
+              case "simpleCheck":
+                setupSimpleCheck(exercise, step);
+                break;
+              default:
+                console.warn("Unbekannter Aufgabentyp:", type);
+                // Evtl. setExerciseDone(step, true) bei unbekannt
+                break;
+            }
+          } else {
+            // Keine Übung => set done if you want
+            setExerciseDone(step, true);
+          }
+          
+          
+
+          // 5) Checkbox-Logik => Falls eine CheckBox (class="exerciseCheck") existiert
+          //    muss sie gecheckt werden, damit Step "fertig" ist => Button freischalten, Balken füllen
+          const checkbox = contentArea.querySelector(".exerciseCheck");
+          if (checkbox) {
+            // Check initial
+            // => wenn user schonmal angehakt hat + refresht => wir gucken in exerciseDone
+            // => Falls exerciseDone[step-1] ist true, UI ist schon done. 
+            // Sonst -> Warten auf Klick
+
+            checkbox.addEventListener("change", e => {
+              setExerciseDone(step, e.target.checked);
+            });
+          } else {
+            // Keine Aufgabe => auto-lösen
+            // setExerciseDone(step, true);
+          }
+
+           // Step-Indikator
+          const stepIndicator = document.getElementById("stepIndicator");
+          if (stepIndicator) {
+            stepIndicator.textContent = step + "/" + maxSteps;
+          }
+
+          // URL aktualisieren (optional)
+          history.replaceState({}, "", "?step=" + step);
+        }
+
+        let stepIsDone = [];
+
+        function setExerciseDone(step, solved) {
+          exerciseDone[step - 1] = solved;
+          const isLastStep = (step === maxSteps);
+          updateStepUI(step, isLastStep);
+        }
+
+        function setupSimpleCheck(exerciseElem, step) {
+          // Suche die Checkbox in diesem Element
+          const checkbox = exerciseElem.querySelector(".exerciseCheck");
+
+          // Falls keine Checkbox vorhanden, markieren wir den Abschnitt ggf. sofort als erledigt
+          if (!checkbox) {
+            setExerciseDone(step, true);
+            return;
+          }
+
+          // Beim ersten Laden prüfen wir den aktuellen Status
+          if (checkbox.checked) {
+            setExerciseDone(step, true);
+          } else {
+            setExerciseDone(step, false);
+          }
+
+          // Jetzt registrieren wir den Event-Listener
+          checkbox.addEventListener("change", (e) => {
+            if (e.target.checked) {
+              // Aufgabe (Abschnitt) als gelöst markieren
+              setExerciseDone(step, true);
+            } else {
+              // wieder abgehakt -> Abschnitt "nicht gelöst"
+              setExerciseDone(step, false);
+            }
+          });
+        }
+
+        function setupMultipleChoice(questionElem, step) {
+          const correctAnswers = questionElem.dataset.correct.split(","); 
+          // z.B. ["2","3"]
+
+          const options = questionElem.querySelectorAll(".mc-option");
+          const checkBtn = questionElem.querySelector(".exercise-check");
+          const showSolBtn = questionElem.querySelector(".exercise-show-solution");
+          const feedback = questionElem.querySelector(".exercise-feedback");
+
+          // Falls kein Check-Button vorhanden, abbrechen
+          if (!checkBtn) return;
+
+          // "Zeige Lösung" - Button ggf. verstecken
+          if (showSolBtn) { showSolBtn.classList.add("d-none"); } 
+
+          // Beim Klick auf „Check“
+          checkBtn.addEventListener("click", () => {
+            // 1) Sammle alle angekreuzten Werte
+            let selectedValues = [];
+            options.forEach(opt => {
+              if (opt.checked) {
+                selectedValues.push(opt.value);
+              }
+            });
+            // 2) Prüfen, ob selectedValues === correctAnswers
+            // => "alle richtigen, keine falschen"
+            // => Man kann sortieren + compare
+            selectedValues.sort();
+            correctAnswers.sort();
+
+            const isCorrect = (JSON.stringify(selectedValues) === JSON.stringify(correctAnswers));
+
+            if (isCorrect) {
+              feedback.style.color = "black";
+              feedback.textContent = "Richtig gelöst!";
+              checkBtn.disabled = true;
+
+              // => Hier: setExerciseDone(step, true), um den Abschnitt "fertig" zu markieren
+              setExerciseDone(step, true);
+              if (showSolBtn) { showSolBtn.classList.add("d-none"); } // Lösung braucht man nicht mehr
+            } else {
+              feedback.style.color = "red";
+              feedback.textContent = "Leider noch falsch, bitte nochmal prüfen.";
+              // => step bleibt undone
+              setExerciseDone(step, false);
+              if (showSolBtn) { showSolBtn.classList.remove("d-none"); }    // Lösungen-Button einblenden
+            }
+          });
+
+          // 4) Event-Listener auf "Zeige Lösung"
+          if (showSolBtn) {
+            showSolBtn.addEventListener("click", () => {
+              // Markiere die richtigen Checkboxen
+              // Und/oder zeige Text, was richtig ist
+              options.forEach(opt => {
+                if (correctAnswers.includes(opt.value)) {
+                  // Kennzeichne z.B. in grüner Farbe
+                  // opt.parentNode.style.color = "green"; 
+                  opt.checked = true; // Optional: schon mal korrekt anhaken
+                } else {
+                  // Falsche Antworten in grauer Farbe
+                  opt.parentNode.style.color = "#666"; 
+                  opt.checked = false;
+                }
+                // Danach soll man nichts mehr anklicken können
+                opt.disabled = true;
+              });
+
+              checkBtn.disabled = true;             // Check-Button deaktivieren
+              showSolBtn.classList.add("d-none");   // Zeige-Lösung-Button verstecken
+              // Feedback
+              feedback.style.color = "gray";
+              feedback.textContent = "Dies ist die korrekte Lösung.";
+
+              setExerciseDone(step, true);
+            });
+          }
+        }
+
+
+        // ============================= SORT CODE ==============================
+        function setupSortCode(exerciseElem, step) {
+          const list = exerciseElem.querySelector(".code-lines");
+          let lines = Array.from(list.querySelectorAll(".code-line"));
+          const checkBtn = exerciseElem.querySelector(".sort-check");
+          const feedback = exerciseElem.querySelector(".sort-feedback");
+
+          shuffleArray(lines);    // Zeilen durchschütteln
+
+          // Leere das UL & füge die gemischten Li-Elemente wieder ein
+          list.innerHTML = ""; 
+          // Füge Drag-Events hinzu
+          lines.forEach(line => {
+            list.appendChild(line);
+            line.addEventListener("dragstart", handleDragStart);
+            line.addEventListener("dragover", handleDragOver);
+            line.addEventListener("drop", handleDrop);
+            line.addEventListener("dragend", handleDragEnd);
+          });
+
+          // 2) "Check"-Button
+          checkBtn.addEventListener("click", () => {
+            const correct = checkOrder(list);
+            if (correct) {
+              feedback.style.color = "black";
+              feedback.textContent = "Richtig gelöst!";
+              checkBtn.disabled = true;
+              setExerciseDone(step, true);
+            } else {
+              feedback.style.color = "red";
+              feedback.textContent = "Noch nicht korrekt, bitte erneut sortieren.";
+              setExerciseDone(step, false);
+            }
+          });
+
+          // Fisher-Yates-Shuffle (klassische Implementierung)
+          function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+              const randIndex = Math.floor(Math.random() * (i + 1));
+              [array[i], array[randIndex]] = [array[randIndex], array[i]];
+            }
+          }
+
+          // Hilfsvariablen / -funktionen
+          let draggedItem = null;
+
+          function handleDragStart(e) {
+            // Aktuelles Element merken
+            draggedItem = this; 
+            // Evtl. Stil-Anpassung
+            e.dataTransfer.effectAllowed = "move";
+            // e.dataTransfer.setData(...) => wenn du Identifikatoren setzen willst
+          }
+
+          function handleDragOver(e) {
+            // Damit "drop" funktioniert
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+          }
+
+          function handleDrop(e) {
+            e.preventDefault();
+            if (draggedItem !== this) {
+              const targetLine = this;
+              const parent = targetLine.parentNode;
+
+              // Bounding-Box des Targets
+              const bounding = targetLine.getBoundingClientRect();
+              const middle = bounding.y + bounding.height / 2;
+
+              // Wo liegt der Mauszeiger?
+              if (e.clientY > middle) {
+                // Nach targetLine einfügen
+                parent.insertBefore(draggedItem, targetLine.nextSibling);
+              } else {
+                // Vor targetLine
+                parent.insertBefore(draggedItem, targetLine);
+              }
+            }
+          }
+
+          function handleDragEnd(e) {
+            draggedItem = null;
+          }
+
+          function checkOrder(ul) {
+            const currentLines = ul.querySelectorAll(".code-line");
+            let orderExpected = 1;
+            for (let li of currentLines) {
+              const realOrder = parseInt(li.dataset.order, 10);
+              if (realOrder !== orderExpected) {
+                return false;
+              }
+              orderExpected++;
+            }
+            return true;
+          }
+        }
+        // ========================= ENDE SORT CODE =============================
+
+
+        function markStepAsDone(step) {
+          stepIsDone[step - 1] = true;
+          updateProgressBar();
+        }
+        function unmarkStep(step) {
+          stepIsDone[step - 1] = false;
+          updateProgressBar();
+        }
+
+        function updateStepUI(step, isLastStep) {
+          const btnNext = document.getElementById("btnNext");
+          const btnFinish = document.getElementById("btnFinish");
+
+          if (isLastStep) {
+            // Wir verstecken btnNext, zeigen btnFinish
+            btnNext.style.display = "none";
+            btnFinish.style.display = "";
+          } else {
+            btnNext.style.display = "";
+            btnFinish.style.display = "none";
+          }
+
+          // Falls der Abschnitt gelöst = exerciseDone[step-1] => enable Button, markStepAsDone
+          if (exerciseDone[step-1]) {
+            if (isLastStep) {
+              btnFinish.disabled = false;
+            } else {
+              btnNext.disabled = false;
+            }
+            markStepAsDone(step);
+          } else {
+            // Noch nicht gelöst => Step undone
+            if (isLastStep) {
+              btnFinish.disabled = true;
+            } else {
+              btnNext.disabled = true;
+            }
+            unmarkStep(step);
+          }
+        }
+
+
+        function updateProgressBar(current, total) {
+           // Wie viele Steps sind done?
+          let doneCount = stepIsDone.filter(Boolean).length;
+          const percent = (doneCount / maxSteps) * 100;
+          const progressBar = document.getElementById("studyProgress");
+          if (progressBar) { progressBar.style.width = percent + "%"; }
+        }
       });
+
+      // Teilt die Markdown-Datei an den Markern ===SECTION===
+     
+      function splitMarkdownIntoSections(mdText) {
+        return mdText
+          // An jeder Zeile, die nur aus ===SECTION=== besteht, splitten wir
+          // Der Regex /^===SECTION===/m passt auf "===SECTION===" am Zeilenanfang
+          .split(/^===SECTION===/m)
+          // Dann trimmen wir Leerzeichen
+          .map(part => part.trim())
+          // und filtern leere Parts heraus
+          .filter(part => part.length > 0);
+      }
     </script>
   `;
 
-  page = replacePlaceholder(page, '<!-- #CONTENT -->', contentHtml);
+  // 4) Platzhalter ersetzen
+  page = replacePlaceholder(page, "<!-- #CONTENT -->", contentHtml);
 
+  // 5) Fertige Seite zurück
   return page;
 }
 
